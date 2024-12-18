@@ -1,0 +1,732 @@
+views:
+  - title: Home
+    cards:
+      - show_current: true
+        show_forecast: false
+        type: weather-forecast
+        entity: weather.maison
+        forecast_type: daily
+      - square: false
+        columns: 3
+        type: grid
+        cards:
+          - type: conditional
+            conditions:
+              - entity: input_boolean.activate_torque_sensors
+                state: 'on'
+            card:
+              type: custom:mushroom-template-card
+              primary: '{{ states.sensor.torque_fuel_level.state | int }}%'
+              secondary: >-
+                {{ as_timestamp(states.sensor.torque_timestamp.state) |
+                timestamp_custom('%H:%M') }}
+              icon: mdi:car
+              icon_color: |-
+                {% if states.sensor.torque_meter_from_home.state | int < 10 %}
+                        blue
+                      {% else %}
+                        red
+                {% endif %}
+              badge_icon: mdi:gas-station
+              badge_color: |-
+                {% if states.sensor.torque_fuel_level.state | int < 20 %}
+                red
+                {% elif states.sensor.torque_fuel_level.state | int < 40 %}
+                yellow
+                {% else %}
+                blue
+                {% endif %}
+              fill_container: false
+              tap_action:
+                action: more-info
+              entity: sensor.torque_fuel_level
+          - type: custom:button-card
+            show_name: false
+            state:
+              - value: running
+                color: red
+                styles:
+                  icon:
+                    - animation:
+                        - rotating 1s linear infinite
+              - value: stopped
+              - value: stopping
+                color: orange
+                spin: true
+            entity: sensor.portable_ac_state
+            icon: mdi:fan
+            color: null
+            tap_action:
+              action: call-service
+              service: script.portable_ac_toggle
+              target: {}
+      - square: false
+        columns: 5
+        type: grid
+        cards:
+          - type: custom:button-card
+            size: 30%
+            entity: input_boolean.camera_entree
+            state:
+              - value: 'off'
+                color: rgb(179, 179, 45)
+                icon: mdi:car-outline
+              - value: 'on'
+                color: rgb(250, 250, 62)
+                icon: mdi:car-outline
+                styles:
+                  icon:
+                    - animation:
+                        - twister .9s linear 6
+            extra_styles: |
+              @keyframes twister {
+                      0% {transform: rotatez(0deg): top: 10px}
+                      25% {transform: rotatez(15deg)}
+                      50% { top: 0px}
+                      75% {transform: rotatez(-15deg)}
+                      100% {transform: roatatez(0deg): top: 10px}
+              }
+            tap_action:
+              action: toggle
+            show_name: false
+          - type: custom:button-card
+            size: 30%
+            entity: input_boolean.camera_cour
+            state:
+              - value: 'off'
+                color: rgb(179, 179, 45)
+                icon: mdi:pool
+              - value: 'on'
+                color: rgb(250, 250, 62)
+                icon: mdi:pool
+                styles:
+                  icon:
+                    - animation:
+                        - twister .9s linear 6
+            extra_styles: |
+              @keyframes twister {
+                      0% {transform: rotatez(0deg): top: 10px}
+                      25% {transform: rotatez(15deg)}
+                      50% { top: 0px}
+                      75% {transform: rotatez(-15deg)}
+                      100% {transform: roatatez(0deg): top: 10px}
+              }
+            tap_action:
+              action: toggle
+            show_name: false
+          - type: custom:button-card
+            size: 30%
+            entity: input_boolean.camera_porte_avant
+            state:
+              - value: 'off'
+                color: rgb(179, 179, 45)
+                icon: mdi:door
+              - value: 'on'
+                color: rgb(250, 250, 62)
+                icon: mdi:door
+                styles:
+                  icon:
+                    - animation:
+                        - twister .9s linear 6
+            extra_styles: |
+              @keyframes twister {
+                      0% {transform: rotatez(0deg): top: 10px}
+                      25% {transform: rotatez(15deg)}
+                      50% { top: 0px}
+                      75% {transform: rotatez(-15deg)}
+                      100% {transform: roatatez(0deg): top: 10px}
+              }
+            tap_action:
+              action: toggle
+            show_name: false
+          - type: custom:button-card
+            size: 30%
+            entity: input_boolean.camera_tapo_ss
+            state:
+              - value: 'off'
+                color: rgb(179, 179, 45)
+                icon: mdi:television-classic
+              - value: 'on'
+                color: rgb(250, 250, 62)
+                icon: mdi:television-classic
+                styles:
+                  icon:
+                    - animation:
+                        - twister .9s linear 6
+            extra_styles: |
+              @keyframes twister {
+                      0% {transform: rotatez(0deg): top: 10px}
+                      25% {transform: rotatez(15deg)}
+                      50% { top: 0px}
+                      75% {transform: rotatez(-15deg)}
+                      100% {transform: roatatez(0deg): top: 10px}
+              }
+            tap_action:
+              action: toggle
+            show_name: false
+          - type: custom:button-card
+            size: 30%
+            entity: input_boolean.camera_tapo_out
+            state:
+              - value: 'off'
+                color: rgb(179, 179, 45)
+                icon: mdi:home-outline
+              - value: 'on'
+                color: rgb(250, 250, 62)
+                icon: mdi:home-outline
+                styles:
+                  icon:
+                    - animation:
+                        - twister .9s linear 6
+            extra_styles: |
+              @keyframes twister {
+                      0% {transform: rotatez(0deg): top: 10px}
+                      25% {transform: rotatez(15deg)}
+                      50% { top: 0px}
+                      75% {transform: rotatez(-15deg)}
+                      100% {transform: roatatez(0deg): top: 10px}
+              }
+            tap_action:
+              action: toggle
+            show_name: false
+      - square: false
+        columns: 1
+        type: grid
+        cards:
+          - type: conditional
+            conditions:
+              - entity: input_boolean.camera_entree
+                state: 'on'
+            card:
+              show_state: true
+              show_name: true
+              camera_view: live
+              type: picture-entity
+              entity: camera.carport_dlink8360
+              name: Entrée avant
+          - type: conditional
+            conditions:
+              - entity: input_boolean.camera_cour
+                state: 'on'
+            card:
+              show_state: true
+              show_name: true
+              camera_view: live
+              type: picture-entity
+              entity: camera.cour_reolink
+              name: Cour Arrière
+          - type: conditional
+            conditions:
+              - entity: input_boolean.camera_porte_avant
+                state: 'on'
+            card:
+              show_state: true
+              show_name: true
+              camera_view: live
+              type: picture-entity
+              entity: camera.devant_reolink_doorbell
+              name: Entrée avant
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: input_boolean.camera_tapo_ss
+                state: 'on'
+            card:
+              name: Salle de jeu
+              type: picture-glance
+              camera_image: camera.salle_jeu_ss_tapo_c200
+              entities:
+                - entity: camera.salle_jeu_ss_tapo_c200
+                  tap_action:
+                    action: call-service
+                    service: onvif.ptz
+                    service_data:
+                      entity_id: camera.tapoc200_ss_onvif_mainstream
+                      move_mode: GotoPreset
+                      preset: '1'
+                  name: Preset1
+                  icon: mdi:sofa-outline
+                  show_icon: true
+                - entity: camera.salle_jeu_ss_tapo_c200
+                  tap_action:
+                    action: call-service
+                    service: onvif.ptz
+                    service_data:
+                      entity_id: camera.tapoc200_ss_onvif_mainstream
+                      move_mode: GotoPreset
+                      preset: '2'
+                  name: Preset2
+                  icon: mdi:door
+                  show_icon: true
+                - entity: camera.salle_jeu_ss_tapo_c200
+                  tap_action:
+                    action: call-service
+                    service: onvif.ptz
+                    service_data:
+                      entity_id: camera.tapoc200_ss_onvif_mainstream
+                      move_mode: GotoPreset
+                      preset: '3'
+                  name: Preset3
+                  icon: mdi:camera-off-outline
+                  show_icon: true
+                - entity: camera.salle_jeu_ss_tapo_c200
+                  tap_action:
+                    action: call-service
+                    service: onvif.ptz
+                    service_data:
+                      entity_id: camera.tapoc200_ss_onvif_mainstream
+                      move_mode: GotoPreset
+                      preset: '4'
+                  name: Preset4
+                  icon: mdi:television
+                  show_icon: true
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: input_boolean.camera_tapo_out
+                state: 'on'
+            card:
+              name: Salle de jeu
+              type: picture-glance
+              camera_image: camera.cour_cabanon_tapo_c210_out
+              entities:
+                - entity: camera.cour_cabanon_tapo_c210_out
+                  tap_action:
+                    action: call-service
+                    service: onvif.ptz
+                    service_data:
+                      entity_id: camera.cam_c210_out_onvif_mainstream
+                      move_mode: GotoPreset
+                      preset: '1'
+                  name: Preset1
+                  icon: mdi:home
+                  show_icon: true
+                - entity: camera.cour_cabanon_tapo_c210_out
+                  tap_action:
+                    action: call-service
+                    service: onvif.ptz
+                    service_data:
+                      entity_id: camera.cam_c210_out_onvif_mainstream
+                      move_mode: GotoPreset
+                      preset: '2'
+                  name: Preset2
+                  icon: mdi:pool
+                  show_icon: true
+                - entity: camera.cour_cabanon_tapo_c210_out
+                  tap_action:
+                    action: call-service
+                    service: onvif.ptz
+                    service_data:
+                      entity_id: camera.cam_c210_out_onvif_mainstream
+                      move_mode: GotoPreset
+                      preset: '3'
+                  name: Preset3
+                  icon: mdi:gamepad
+                  show_icon: true
+                - entity: camera.cour_cabanon_tapo_c210_out
+                  tap_action:
+                    action: call-service
+                    service: onvif.ptz
+                    service_data:
+                      entity_id: camera.cam_c210_out_onvif_mainstream
+                      move_mode: GotoPreset
+                      preset: '4'
+                  name: Preset3
+                  icon: mdi:camera-off-outline
+                  show_icon: true
+      - type: custom:banner-card
+        heading:
+          - mdi:security
+          - Alarme
+        background: '#FC9EA5'
+        entities:
+          - entity: binary_sensor.zone_1_porte_avant
+            name: Porte Avant
+            map_state:
+              'off':
+                value: mdi:door-closed
+              'on':
+                value: mdi:door-open
+                color: '#FBEAAA'
+          - entity: alarm_control_panel.security_system_partition_1
+            name: Système
+            value: mdi:security
+            map_state:
+              disarmed:
+                color: lightblue
+              armed:
+                color: pink
+          - entity: binary_sensor.zone_2_porte_arriere_x2
+            name: Porte Arrière
+            map_state:
+              'off':
+                value: mdi:door-closed
+              'on':
+                value: mdi:door-open
+                color: '#FBEAAA'
+          - entity: binary_sensor.zone_3_fenetre_salon
+            name: Fenetre Salon
+            map_state:
+              'off':
+                value: mdi:window-closed
+              'on':
+                value: mdi:window-open
+                color: '#FBEAAA'
+          - entity: binary_sensor.security_trouble
+            name: Trouble
+            value: mdi:flash-triangle-outline
+            map_state:
+              'on':
+                color: '#FBEAAA'
+          - entity: binary_sensor.zone_6_fenetres_sous_sol_x3
+            name: Fenetre SS
+            map_state:
+              'off':
+                value: mdi:window-closed
+              'on':
+                value: mdi:window-open
+                color: '#FBEAAA'
+          - entity: binary_sensor.zone_4_presence_cuisine
+            name: Presence Cuisine
+            map_state:
+              'off':
+                value: mdi:motion-sensor-off
+              'on':
+                value: mdi:motion-sensor
+                color: '#FBEAAA'
+          - entity: binary_sensor.zone_5_presence_sous_sol
+            name: Presence SS
+            map_state:
+              'off':
+                value: mdi:motion-sensor-off
+              'on':
+                value: mdi:motion-sensor
+                color: yellow
+          - entity: binary_sensor.ewelink_ms01_iaszone
+            name: Presence Serveur
+            map_state:
+              'off':
+                value: mdi:motion-sensor-off
+              'on':
+                value: mdi:motion-sensor
+                color: yellow
+      - type: custom:banner-card
+        background: '#EDE7B0'
+        heading:
+          - mdi:sofa-outline
+          - Salon
+        link: /lovelace-salon
+        row_size: 2
+        entities:
+          - entity: climate.chauffage_salon
+            name: Salon
+            attribute: current_temperature
+            unit: °C
+          - entity: light.sonoff_light_salon_switch
+            name: Salon
+            value: mdi:lightbulb-outline
+            map_state:
+              'on':
+                color: yellow
+                value: mdi:lightbulb-on-outline
+                action:
+                  service: light.turn_off
+              'off':
+                color: white
+                value: mdi:lightbulb-outline
+                action:
+                  service: light.turn_on
+          - entity: climate.chauffage_salle_a_diner
+            name: Salle à diner
+            attribute: current_temperature
+            unit: °C
+          - entity: light.salle_a_manger
+            name: Salle à diner
+            domain: sensor
+            map_state:
+              'on':
+                color: yellow
+                value: mdi:lightbulb-on-outline
+                action:
+                  service: light.turn_off
+              'off':
+                color: white
+                value: mdi:lightbulb-outline
+                action:
+                  service: light.turn_on
+      - type: custom:banner-card
+        heading:
+          - mdi:bed-outline
+          - Nathan
+        background: '#DEB105'
+        entities:
+          - entity: climate.chauffage_nathan
+            name: Chauffage
+            attribute: current_temperature
+            unit: °C
+          - entity: light.lampe_nathan_light
+            name: Lampe
+            value: mdi:lightbulb-outline
+            map_state:
+              'on':
+                color: yellow
+                value: mdi:lightbulb-on-outline
+                action:
+                  service: light.turn_off
+              'off':
+                color: white
+                value: mdi:lightbulb-outline
+                action:
+                  service: light.turn_on
+          - entity: light.lenovo_light_strip
+            name: Del
+            value: mdi:lightbulb-outline
+            map_state:
+              'on':
+                color: yellow
+                value: mdi:led-strip-variant
+                action:
+                  service: light.turn_off
+              'off':
+                color: white
+                value: mdi:led-strip-variant-off
+                action:
+                  service: light.turn_on
+      - type: custom:banner-card
+        heading:
+          - mdi:gamepad-square-outline
+          - Salle de jeu
+        background: '#92F9E9'
+        entities:
+          - entity: climate.chauffage_salle_de_jeu
+            name: Chauffage
+            attribute: current_temperature
+            unit: °C
+          - entity: light.jasco_lumiere_salle_de_jeu
+            name: Lampe
+            value: mdi:lightbulb-outline
+            map_state:
+              'on':
+                color: yellow
+                value: mdi:lightbulb-on-outline
+                action:
+                  service: light.turn_off
+              'off':
+                color: white
+                value: mdi:lightbulb-outline
+                action:
+                  service: light.turn_on
+          - entity: switch.pfsense_filter_rule_1602198368_chromecast4k_nathan
+            name: TV
+            map_state:
+              'off':
+                color: white
+                value: mdi:network-outline
+                action:
+                  service: switch.turn_on
+              'on':
+                color: pink
+                value: mdi:network-off-outline
+                action:
+                  service: switch.turn_off
+          - entity: sensor.plug_air_climatisee_smartenergymetering
+            name: Power AC
+          - entity: sensor.portable_ac_state
+            name: AC
+            map_state:
+              running:
+                color: red
+                value: mdi:fan
+                action:
+                  service: switch.turn_on
+              stopping:
+                color: yellow
+                value: mdi:fan-alert
+                action:
+                  service: switch.turn_off
+              stopped:
+                color: white
+                value: mdi:fan-off
+                action:
+                  service: switch.turn_off
+      - type: custom:banner-card
+        heading:
+          - mdi:stove
+          - Cuisine
+        background: '#B1FBC3'
+        entities:
+          - entity: climate.chauffage_cuisine
+            name: Chauffage
+            attribute: current_temperature
+            unit: °C
+          - entity: sensor.plug_laveuse_smartenergymetering
+            name: Laveuse
+          - entity: switch.pfsense_filter_rule_1593995430_google_home_hub
+            name: Google Hub
+            map_state:
+              'off':
+                color: white
+                value: mdi:network-outline
+                action:
+                  service: switch.turn_on
+              'on':
+                color: pink
+                value: mdi:network-off-outline
+                action:
+                  service: switch.turn_off
+      - type: custom:banner-card
+        heading:
+          - mdi:server
+          - Serveur
+        background: '#FDBAEE'
+        entities:
+          - entity: climate.chauffage_serveurs_storage
+            name: Chauffage
+            attribute: current_temperature
+            unit: °C
+          - entity: light.lumiere_salle_serveur
+            name: Lampe
+            value: mdi:lightbulb-outline
+            map_state:
+              'on':
+                color: yellow
+                value: mdi:lightbulb-on-outline
+                action:
+                  service: light.turn_off
+              'off':
+                color: white
+                value: mdi:lightbulb-outline
+                action:
+                  service: light.turn_on
+          - entity: sensor.plug_serveurs_smartenergymetering
+            name: Consommation
+      - type: custom:banner-card
+        background: '#FAF9B7'
+        heading:
+          - mdi:bed-king-outline
+          - Chambre
+        row_size: 2
+        entities:
+          - entity: climate.chauffage_chambre_principale
+            name: Chambre
+            attribute: current_temperature
+            unit: °C
+          - entity: climate.chauffage_walkin
+            name: Walkin
+            attribute: current_temperature
+            unit: °C
+      - type: custom:banner-card
+        background: '#EDE'
+        heading:
+          - mdi:network-outline
+          - Réseau
+        link: /lovelace/network
+        entities:
+          - entity: sensor.speedtest_download
+            name: Download
+            unit: null
+          - entity: sensor.speedtest_upload
+            name: Upload
+            unit: null
+          - entity: sensor.speedtest_ping
+            name: Ping
+      - type: conditional
+        conditions:
+          - entity: input_boolean.activate_pool_sensors
+            state: 'on'
+        card:
+          type: custom:button-card
+          entity: sensor.esp8266pool_pool_temperature_c
+          show_name: false
+          show_state: false
+          show_icon: false
+          tap_action:
+            action: more-info
+          styles:
+            grid:
+              - grid-template-areas: '"icon temp"'
+            card:
+              - padding: 24px
+              - background: >-
+                  linear-gradient(145deg, rgba(216,246,243,1) -30%,
+                  rgba(255,255,255,1) 75%)
+            custom_fields:
+              graph:
+                - position: absolute
+                - width: 100%
+                - left: 0
+                - bottom: 0
+              temp:
+                - justify-self: start
+                - text-align: left
+                - font-size: 40px
+                - color: black
+                - line-height: 50px
+                - font-weight: 300
+                - padding: 12px
+              icon:
+                - justify-self: start
+                - padding: 10px
+                - justify-self: start
+                - text-align: left
+                - font-size: 40px
+                - color: black
+                - line-height: 50px
+                - font-weight: 300
+          variables:
+            var_temp_c: >
+              [[[  return
+              Math.round(states['sensor.esp8266pool_pool_temperature_c'].state)
+              + ' °C' ]]]
+            var_temp_f: >
+              [[[  return '<span style="font-size: 0.3em">' +
+              Math.round(states['sensor.esp8266pool_pool_temperature_f'].state)
+              + ' °F</span>' ]]]
+          custom_fields:
+            temp: |
+              [[[ return `${variables.var_temp_c} ${variables.var_temp_f}` ]]]
+            icon: |
+              [[[
+                var state = entity.state;
+                
+                return `<ha-icon
+                icon="mdi:waves"
+                style="color: #0E7FF7; width:60px; height:60px;">
+                </ha-icon>
+                `;
+              ]]]
+            graph:
+              card:
+                type: custom:mini-graph-card
+                entities:
+                  - entity: sensor.esp8266pool_pool_temperature_c
+                    color: '#0E7FF7'
+                line_width: 0
+                height: 100
+                show:
+                  icon: false
+                  state: false
+                  name: false
+                  legend: false
+                  labels: false
+                card_mod:
+                  style: |
+                    ha-card {
+                      border-style: none;
+                      background: none;
+                    }      
+      - type: custom:threedy-card
+        base_entity: sensor.octoprintsv06plus
+        monitored:
+          - Status
+          - Hotend
+          - Bed
+          - ETA
+        printer_type: I3
+        name: Sv06 plus
+        always_show: true
+        temperature_unit: C
+        round_temperature: true
+        use_24hr: true
+        camera_entity: camera.3d_sv06plus
+        light_entity: light.sv06_plus_light
