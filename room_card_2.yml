@@ -1,0 +1,132 @@
+type: vertical-stack
+cards:
+  - type: custom:mushroom-title-card
+    title: Home
+  - type: grid
+    square: false
+    columns: 1
+    cards:
+      - type: custom:button-card
+        name: Salon
+        icon: mdi:sofa
+        custom_fields:
+          temp: >
+            [[[ return states['sensor.esp8266pool_pool_temperature_c'].state +
+            '°C' ]]]    
+          hum: >
+            [[[ return states['sensor.esp8266pool_pool_temperature_f'].state +
+            '°F' ]]]
+          btn1:
+            card:
+              type: custom:mushroom-chips-card
+              chips:
+                - type: template
+                  icon: mdi:lamp
+                  tap_action:
+                    action: toggle
+                  entity: light.lamp_ute_carport
+                  card_mod:
+                    style: |
+                      ha-card {
+                        --chip-background: {{ 'rgba(138, 205, 215, 1)' if is_state('switch.bedroom', 'on') else 'rgba(138, 205, 215, 0.3)' }};
+                        padding: 5px!important;
+                        border-radius: 100px!important;
+                      }    
+                - type: template
+                  icon: mdi:vacuum
+                  tap_action:
+                    action: toggle
+                  entity: vacuum.lucy
+                  card_mod:
+                    style: |
+                      ha-card {
+                        --chip-background: {{ 'rgba(223, 130, 108, 1)' if is_state('vacuum.lucy', 'on') else 'rgba(223, 130, 108, 0.3)' }};
+                        padding: 5px!important;
+                        border-radius: 100px!important;
+                      }     
+                - type: template
+                  icon: mdi:television
+                  tap_action:
+                    action: toggle
+                  entity: media_player.tv
+                  card_mod:
+                    style: |
+                      ha-card {
+                        --chip-background: {{ 'rgba(166, 207, 152, 1)' if is_state('media_player.tv', 'on') else 'rgba(166, 207, 152, 0.3)' }};
+                        padding: 5px!important;
+                        border-radius: 100px!important;
+                      }                
+          btn2:
+            card:
+              type: custom:mushroom-chips-card
+              chips:
+                - type: template
+                  icon: mdi:fan
+                  tap_action:
+                    action: toggle
+                  entity: switch.fan
+                  card_mod:
+                    style: |
+                      ha-card {
+                        --chip-background: {{ 'rgba(255, 207, 150, 1)' if is_state('switch.fan', 'on') else 'rgba(255, 207, 150, 0.5)' }};
+                        padding: 5px!important;
+                        border-radius: 100px!important;
+                      }    
+                - type: template
+                  icon: mdi:human-greeting-variant
+                  tap_action:
+                    action: toggle
+                  entity: sensor.presence
+                  card_mod:
+                    style: |
+                      ha-card {
+                        --chip-background: {{ 'rgba(129, 104, 157, 1)' if is_state('sensor.presence', 'on') else 'rgba(129, 104, 157, 0.3)' }};
+                        padding: 5px!important;
+                        border-radius: 100px!important;
+                      }     
+                       
+        styles:
+          grid:
+            - grid-template-areas: "\"n btn1 btn2\" \"temp btn1 btn2\" \"hum btn1 btn2\" \"i btn1 btn2\""
+            - grid-template-columns: 1fr min-content min-content
+            - grid-template-rows: min-content min-content min-content 1fr
+          card:
+            - padding: 22px 8px 22px 22px
+            - height: 200px
+          custom_fields:
+            temp:
+              - justify-self: start
+              - font-size: 14px
+              - opacity: "0.7"
+              - padding-top: 10px
+            hum:
+              - justify-self: start
+              - font-size: 14px
+              - opacity: "0.7"
+            btn1:
+              - justify-content: end
+              - align-self: start
+            btn2:
+              - justify-content: end
+              - align-self: start
+              - padding-left: 6px
+          name:
+            - justify-self: start
+            - font-size: 18px
+            - font-weight: 500
+            - color: black
+          img_cell:
+            - justify-content: start
+            - position: absolute
+            - width: 120px
+            - height: 120px
+            - left: 0
+            - bottom: 0
+            - margin: 0 0 -20px -20px
+            - background: "#FFC47E"
+            - border-radius: 500px
+          icon:
+            - position: relative
+            - width: 50px
+            - color: black
+            - opacity: "0.5"

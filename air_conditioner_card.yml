@@ -1,0 +1,111 @@
+type: custom:button-card
+entity: light.jasco_lumiere_salle_de_jeu
+name: >
+  [[[ return 'Salle de jeu (' +
+  Math.round((states['sensor.chauffage_salle_de_jeu_temperature'].state)) + '°)'
+  ]]]
+label: Air Conditioner
+show_icon: true
+show_label: true
+icon: mdi:fan
+tap_action:
+  action: toggle
+state:
+  - value: "on"
+    spin: true
+    styles:
+      card:
+        - background: >-
+            linear-gradient(145deg, rgba(247,198,157,1) -30%,
+            rgba(255,255,255,1) 50%)
+  - value: "off"
+    icon: mdi:fan-off
+styles:
+  card:
+    - padding: 34px
+    - background: var(--contrast1)
+  grid:
+    - grid-template-areas: "\"i l l l icon\" \"i n n n icon\" \"i btn_minus state btn_plus icon\""
+    - grid-template-columns: min-content min-content min-content min-content 1fr
+    - grid-template-rows: min-content min-content 1fr
+  label:
+    - justify-self: start
+    - font-size: 26px
+    - font-weight: 300
+  name:
+    - justify-self: start
+    - font-size: 14px
+    - font-weight: 400
+    - text-transform: uppercase
+    - color: var(--contast20)
+    - padding: 6px 0 18px 0
+  icon:
+    - width: 64px
+    - color: var(--contast20)
+  img_cell:
+    - width: 64px
+    - height: 64px
+    - padding-right: 34px
+  custom_fields:
+    icon:
+      - justify-self: end
+    buttons:
+      - justify-self: start
+    state:
+      - font-size: 40px
+      - font-weight: 300
+custom_fields:
+  icon: |
+    [[[
+     var state = entity.state;
+     if(state == "on")
+      return `<ha-icon
+      icon="mdi:toggle-switch"
+      style="color: #f7c69d; width:60px; height:60px;">
+      </ha-icon>
+      `;
+     else 
+      return `<ha-icon
+      icon="mdi:toggle-switch-off"
+      style="color: black; width:60px; height:60px;">
+      </ha-icon>
+      `;
+    ]]]
+  state: >
+    [[[ return
+    Math.round((states['climate.chauffage_salle_de_jeu'].attributes.temperature))
+    + '°' ]]]
+  btn_minus:
+    card:
+      type: custom:button-card
+      icon: mdi:minus
+      show_name: false
+      aspect_ratio: 1/1
+      tap_action:
+        action: call-service
+        service: input_number.decrement
+        target:
+          entity_id:
+            - input_number.tutorial_aircon_number
+        data:
+          amount: 1
+      styles:
+        card:
+          - background: none
+  btn_plus:
+    card:
+      type: custom:button-card
+      icon: mdi:plus
+      show_name: false
+      aspect_ratio: 1/1
+      styles:
+        card:
+          - background: none
+      tap_action:
+        action: call-service
+        service: input_number.increment
+        target:
+          entity_id:
+            - input_number.tutorial_aircon_number
+        data:
+          amount: 1
