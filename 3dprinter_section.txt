@@ -1,0 +1,168 @@
+- type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            icon: mdi:printer-3d-nozzle-outline
+            heading: 3D printer
+            badges:
+              - type: entity
+                show_state: true
+                show_icon: true
+                entity: sensor.sonoff_temp_humidity_temperature
+                tap_action:
+                  action: more-info
+              - type: entity
+                show_state: true
+                show_icon: true
+                entity: sensor.sonoff_temp_humidity_humidite
+                tap_action:
+                  action: more-info
+              - type: entity
+                show_state: true
+                show_icon: true
+                entity: sensor.plug_3d_sv06plus_smartenergymetering
+                tap_action:
+                  action: more-info
+          - type: custom:stack-in-card
+            cards:
+              - type: custom:mushroom-template-card
+                entity: camera.octoprintsv06plus_camera
+                primary: '{{ states(''sensor.octoprint_print_file'')}}'
+                secondary: |-
+                  {% if is_state('sensor.octoprint_print_status','Printing') %}
+                    {{ (states('sensor.octoprint_print_progress') | round(0) )}}% {{states('sensor.octoprint_print_status')}}
+                  {% else %}
+                    {{states('sensor.octoprint_print_status')}}
+                  {% endif %}       
+                icon: mdi:printer-3d-nozzle
+                icon_color: black
+                tap_action:
+                  action: more-info
+                hold_action:
+                  action: navigate
+                  navigation_path: /lovelace/3d-printer
+                card_mod:
+                  style:
+                    mushroom-shape-icon$: |
+                      .shape {
+                        background: radial-gradient(var(--card-background-color) 60%, transparent 0%), conic-gradient(rgb(252,109,9) {{ states('sensor.octoprint_print_progress') | round(0) }}% 0%, var(--card-background-color) 0% 100%);
+                      }
+                      .shape:after {
+                        content: "";
+                        height: 100%;
+                        width: 100%;
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(var(--rgb-{{ config.icon_color }}), 0.1);
+                      }
+                    .: |
+                      ha-card {
+                        border: none;
+                      }
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    content: '{{ states(''sensor.octoprint_tool_0_temperature'') }} °C'
+                    icon: mdi:printer-3d-nozzle-heat
+                    card_mod:
+                      style: |
+                        ha-card {
+                          --chip-background: rgba(var(--rgb-{{ config.icon_color }}), 0.1);
+                          border: none;
+                        }
+                  - type: template
+                    content: >-
+                      {{ states('sensor.octoprintsv06plus_actual_bed_temp') }}
+                      °C 
+                    icon: mdi:heating-coil
+                    card_mod:
+                      style: |
+                        ha-card {
+                          --chip-background: rgba(var(--rgb-{{ config.icon_color }}), 0.1);
+                          border: none;
+                        }
+                  - type: conditional
+                    conditions:
+                      - condition: state
+                        entity: binary_sensor.octoprint_printing
+                        state: 'on'
+                    chip:
+                      type: template
+                      content: >-
+                        {% set time =
+                        (states('sensor.octoprint_print_time_left') | int) | int
+                        %} {% set minutes = ((time % 3600) / 60) | int %} {% set
+                        hours = ((time % 86400) / 3600) | int %} {% set days =
+                        (time / 86400) | int %}
+
+                        {%- if time < 60 -%}
+                          Less than a minute
+                          {%- else -%}
+                          {%- if days > 0 -%}
+                            {{ days }}d
+                          {%- endif -%}
+                          {%- if hours > 0 -%}
+                            {%- if days > 0 -%}
+                              {{ ' ' }}
+                            {%- endif -%}
+                            {{ hours }}h
+                          {%- endif -%}
+                          {%- if minutes > 0 -%}
+                            {%- if days > 0 or hours > 0 -%}
+                              {{ ' ' }}
+                            {%- endif -%}
+                            {{ minutes }}m
+                          {%- endif -%}
+                        {%- endif -%}
+                      icon: mdi:timer
+                      card_mod:
+                        style: |
+                          ha-card {
+                            --chip-background: --chip-background: rgba(var(--rgb-{{ config.icon_color }}), 0.1);
+                          border: none;
+                          }
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: light.sv06_plus_light
+                show_name: false
+                icon: mdi:lightbulb-on-30
+              - type: custom:button-card
+                entity: camera.octoprintsv06plus_camera
+                show_name: false
+              - show_name: false
+                type: custom:button-card
+                icon: mdi:camera
+                entity: camera.sv06plus_tapo
+            grid_options:
+              rows: auto
+              columns: 9
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.custom_sv06plus_admin_toggle
+            name: Actions Admin
+            primary_info: name
+            secondary_info: none
+            grid_options:
+              columns: 6
+              rows: 1
+            tap_action:
+              action: toggle
+          - type: custom:mushroom-entity-card
+            entity: switch.plug_3d_sv06plus_switch
+            icon: mdi:power
+            primary_info: none
+            secondary_info: none
+            grid_options:
+              columns: 3
+              rows: 1
+            tap_action:
+              action: toggle
+            visibility:
+              - condition: state
+                entity: input_boolean.custom_sv06plus_admin_toggle
+                state: 'on'
+            icon_color: red
+        visibility:
+          - condition: user
+            users:
+              - 4d923c328b22439d8516dc9887309926
